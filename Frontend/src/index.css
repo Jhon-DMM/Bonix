@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-paper text-ink;
+}
+
+.ingredient-reveal {
+  opacity: 0;
+  transform: translateX(28px);
+  transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ingredient-reveal.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Respect reduced-motion preferences for the hero slide animation */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
