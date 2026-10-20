@@ -1,30 +1,32 @@
-// Render the product photo when one is assigned; keep the SVG as a fallback.
-export default function DessertIllustration({ dessert, size = 260 }) {
-  if (dessert.image) {
+import { resolverImagenPostre } from '../services/dessertService.js';
+
+// Muestra la foto asignada al postre o una ilustración SVG de respaldo.
+export default function IlustracionPostre({ postre, tamano = 260 }) {
+  if (postre.image) {
     return (
       <img
-        src={dessert.image}
-        width={size}
-        height={size}
-        alt={`Postre ${dessert.name}`}
+        src={resolverImagenPostre(postre.image)}
+        width={tamano}
+        height={tamano}
+        alt={`Postre ${postre.name}`}
         className="object-contain"
       />
     );
   }
 
-  const { accent, to } = dessert.colors;
-  const gradientId = `grad-${dessert.id}`;
+  const { accent, to } = postre.colors;
+  const idDegradado = `degradado-${postre.id}`;
 
   return (
     <svg
-      width={size}
-      height={size}
+      width={tamano}
+      height={tamano}
       viewBox="0 0 240 240"
       role="img"
-      aria-label={`Ilustración del postre ${dessert.name}`}
+      aria-label={`Ilustración del postre ${postre.name}`}
     >
       <defs>
-        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={idDegradado} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={to} />
           <stop offset="100%" stopColor={accent} stopOpacity="0.85" />
         </linearGradient>
@@ -37,7 +39,7 @@ export default function DessertIllustration({ dessert, size = 260 }) {
       />
       <path
         d="M64 100 h112 l-9 100 a10 10 0 0 1-10 9 H83 a10 10 0 0 1-10-9 L64 100Z"
-        fill={`url(#${gradientId})`}
+        fill={`url(#${idDegradado})`}
       />
       {/* layers */}
       <rect x="64" y="130" width="112" height="10" fill="#ffffff" fillOpacity="0.5" />

@@ -18,32 +18,6 @@ como `file://` (doble clic), así que **nunca va a funcionar así,
 aunque todo el código esté bien**. Siempre tienes que levantar el
 servidor de desarrollo y entrar por la URL que te da:
 
-```bash
-npm install
-npm run dev       # abre la URL que muestra en la terminal, normalmente http://localhost:5173
-```
-
-Y para que la página tenga postres que mostrar, el backend también
-debe estar corriendo al mismo tiempo (ver `../backend/README.md`).
-
-## Cómo correrlo
-
-```bash
-npm install
-npm run dev       # desarrollo, http://localhost:5173 (requiere el backend corriendo)
-npm run build     # genera /dist listo para publicar
-```
-
-En desarrollo, las peticiones a `/api/...` se reenvían automáticamente
-al backend gracias al proxy configurado en `vite.config.js`. En
-producción, si frontend y backend quedan en dominios distintos, define
-la variable de entorno `VITE_API_URL` (por ejemplo en un archivo
-`.env`) apuntando a la URL pública de la API, p. ej.:
-
-```
-VITE_API_URL=https://api.bonix.com/api
-```
-
 ## Estructura
 
 ```
@@ -72,6 +46,7 @@ Entra a **`/#admin`** (por ejemplo `http://localhost:5173/#admin`) para:
 
 - Cambiar el precio de cada postre.
 - Agregar o quitar ingredientes de cada postre.
+- Cambiar las imágenes incluidas o subir una imagen desde el dispositivo.
 - Agregar un postre nuevo (aparece automáticamente en el hero y gana su
   propia sección) o eliminar uno existente.
 
@@ -79,13 +54,18 @@ Cada acción llama a la API real del backend — los cambios quedan
 guardados en la base de datos, no solo en esta pestaña.
 
 No está enlazado desde el menú principal a propósito — es la vista del
-operador, no de los clientes. Más adelante se puede proteger con login.
+operador, no de los clientes. Al abrir `/#admin` se solicita el usuario y la
+contraseña configurados en el backend. Las acciones de escritura también
+quedan protegidas por sesión en la API. Consulta `../backend/README.md` para
+crear o cambiar las credenciales.
+
+Las fotos elegidas en el dispositivo se optimizan a WebP y se envían como
+archivo a la API; consulta `../backend/README.md` para la migración de fotos
+anteriores y el requisito de almacenamiento persistente en producción.
 
 ## Cosas que debes personalizar
 
 - **Número de WhatsApp:** está en `src/utils/whatsapp.js`
   (`WHATSAPP_NUMBER`) como marcador de posición. Cámbialo por el número
   real de Bonix, en formato `57XXXXXXXXXX`.
-- **Imágenes reales:** cada postre tiene espacio para un campo `image`
-  en el modelo del backend; hoy se usa una ilustración genérica
-  (`DessertIllustration.jsx`) mientras no haya fotos.
+

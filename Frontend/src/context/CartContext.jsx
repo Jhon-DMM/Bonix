@@ -1,71 +1,43 @@
-import { createContext, useContext, useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback } from 'react';
+import { ContextoCanasta } from './cartStore.js';
+import { agregarElementoCanasta, obtenerTotalesCanasta, fijarCantidadElementoCanasta } from '../utils/cart.js';
 
-const CartContext = createContext(null);
+export function ProveedorCanasta({ children }) {
+  const [elementos, fijarElementos] = useState([]); // { id, name, price, quantity }
+  const [estaAbierto, fijarEstaAbierto] = useState(false);
 
-export function CartProvider({ children }) {
-  const [items, setItems] = useState([]); // { id, name, price, quantity }
-  const [isOpen, setIsOpen] = useState(false);
-
-  const addItem = useCallback((dessert, quantity) => {
-    setItems((prev) => {
-      const existing = prev.find((item) => item.id === dessert.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.id === dessert.id ? { ...item, quantity: item.quantity + quantity } : item
-        );
-      }
-      return [
-        ...prev,
-        { id: dessert.id, name: dessert.name, price: dessert.price, quantity },
-      ];
-    });
+  const agregarElemento = useCallback((postre, cantidad) => {
+    fijarElementos((elementosPrevios) => agregarElementoCanasta(elementosPrevios, postre, cantidad));
   }, []);
 
-  const removeItem = useCallback((id) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+  const quitarElemento = useCallback((id) => {
+    fijarElementos((elementosPrevios) => elementosPrevios.filter((elemento) => elemento.id !== id));
   }, []);
 
-  const updateQuantity = useCallback((id, quantity) => {
-    setItems((prev) =>
-      quantity <= 0
-        ? prev.filter((item) => item.id !== id)
-        : prev.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
+  const actualizarCantidad = useCallback((id, cantidad) => {
+    fijarElementos((elementosPrevios) => fijarCantidadElementoCanasta(elementosPrevios, id, cantidad));
   }, []);
 
-  const clearCart = useCallback(() => setItems([]), []);
-  const openCart = useCallback(() => setIsOpen(true), []);
-  const closeCart = useCallback(() => setIsOpen(false), []);
-  const toggleCart = useCallback(() => setIsOpen((prev) => !prev), []);
+  const vaciarCanasta = useCallback(() => fijarElementos([]), []);
+  const abrirCanasta = useCallback(() => fijarEstaAbierto(true), []);
+  const cerrarCanasta = useCallback(() => fijarEstaAbierto(false), []);
+  const alternarCanasta = useCallback(() => fijarEstaAbierto((abiertoPrevio) => !abiertoPrevio), []);
 
-  const totalCount = useMemo(
-    () => items.reduce((sum, item) => sum + item.quantity, 0),
-    [items]
-  );
-  const totalPrice = useMemo(
-    () => items.reduce((sum, item) => sum + item.price * item.quantity, 0),
-    [items]
-  );
+  const { count: cantidadTotal, price: precioTotal } = useMemo(() => obtenerTotalesCanasta(elementos), [elementos]);
 
-  const value = {
-    items,
-    isOpen,
-    totalCount,
-    totalPrice,
-    addItem,
-    removeItem,
-    updateQuantity,
-    clearCart,
-    openCart,
-    closeCart,
-    toggleCart,
+  const valorContexto = {
+    elementos,
+    estaAbierto,
+    cantidadTotal,
+    precioTotal,
+    agregarElemento,
+    quitarElemento,
+    actualizarCantidad,
+    vaciarCanasta,
+    abrirCanasta,
+    cerrarCanasta,
+    alternarCanasta,
   };
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
-}
-
-export function useCart() {
-  const ctx = useContext(CartContext);
-  if (!ctx) throw new Error('useCart debe usarse dentro de <CartProvider>');
-  return ctx;
+  return <ContextoCanasta.Provider value={valorContexto}>{children}</ContextoCanasta.Provider>;
 }

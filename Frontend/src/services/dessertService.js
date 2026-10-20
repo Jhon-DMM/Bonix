@@ -14,16 +14,24 @@
  */
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
+export function resolverImagenPostre(image) {
+  if (typeof image !== 'string' || !image.startsWith('/uploads/')) return image;
+  const apiUrl = new URL(API_BASE, window.location.origin);
+  return new URL(image, apiUrl.origin).toString();
+}
+
 async function request(path, options = {}) {
   let res;
   try {
     res = await fetch(`${API_BASE}${path}`, {
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       ...options,
     });
   } catch (networkError) {
     throw new Error(
-      'No se pudo conectar con el servidor de Bonix. ¿Está corriendo el backend (npm run dev en /backend)?'
+      'No se pudo conectar con el servidor de Bonix. ¿Está corriendo el backend (npm run dev en /backend)?',
+      { cause: networkError }
     );
   }
 
@@ -35,45 +43,62 @@ async function request(path, options = {}) {
   return res.json();
 }
 
-export async function getDesserts() {
+export async function obtenerPostres() {
   return request('/desserts');
 }
 
-export async function getDessertById(id) {
+export async function obtenerPostrePorId(id) {
   return request(`/desserts/${id}`);
 }
 
 /** Admin action: change a dessert's price. */
-export async function updateDessertPrice(id, price) {
+export async function actualizarPrecioPostre(id, price) {
   return request(`/desserts/${id}`, {
     method: 'PATCH',
     body: JSON.stringify({ price }),
   });
 }
 
+/** Admin action: update multiple dessert prices in one atomic API operation. */
+export async function actualizarPreciosPostres(dessertIds, price) {
+  return request('/desserts/prices', {
+    method: 'PATCH',
+    body: JSON.stringify({ dessertIds, price }),
+  });
+}
+
 /** Admin action: change the image path used by the homepage and sections. */
-export async function updateDessertImage(id, image) {
+export async function actualizarImagenPostre(id, image) {
   return request(`/desserts/${id}`, {
     method: 'PATCH',
     body: JSON.stringify({ image }),
   });
 }
 
+/** Admin action: upload an optimized WebP image to the backend file store. */
+export async function subirImagenPostre(id, imageBlob) {
+  return request(`/desserts/${id}/image`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'image/webp' },
+    body: imageBlob,
+  });
+}
+
 /** Admin action: add a brand-new dessert (shows up in the hero carousel and its own section). */
-export async function addDessert(dessert) {
+export async function agregarPostre(postre) {
   return request('/desserts', {
     method: 'POST',
-    body: JSON.stringify(dessert),
+    body: JSON.stringify(postre),
   });
 }
 
 /** Admin action: remove a dessert everywhere (hero + its section disappear). */
-export async function removeDessert(id) {
+export async function eliminarPostre(id) {
   return request(`/desserts/${id}`, { method: 'DELETE' });
 }
 
 /** Admin action: add one ingredient to a dessert's list. */
-export async function addIngredient(dessertId, ingredientName) {
+export async function agregarIngrediente(dessertId, ingredientName) {
   return request(`/desserts/${dessertId}/ingredients`, {
     method: 'POST',
     body: JSON.stringify({ name: ingredientName }),
@@ -81,7 +106,7 @@ export async function addIngredient(dessertId, ingredientName) {
 }
 
 /** Admin action: remove one ingredient from a dessert's list. */
-export async function removeIngredient(dessertId, ingredientId) {
+export async function quitarIngrediente(dessertId, ingredientId) {
   return request(`/desserts/${dessertId}/ingredients/${ingredientId}`, {
     method: 'DELETE',
   });

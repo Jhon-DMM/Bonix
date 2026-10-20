@@ -1,44 +1,44 @@
 import { useEffect, useState } from 'react';
-import * as dessertService from './services/dessertService.js';
-import { CartProvider } from './context/CartContext.jsx';
-import Header from './components/Header.jsx';
-import Hero from './components/Hero.jsx';
-import DessertSection from './components/DessertSection.jsx';
-import Footer from './components/Footer.jsx';
-import CartDrawer from './components/CartDrawer.jsx';
-import AdminPanel from './components/AdminPanel.jsx';
+import * as servicioPostres from './services/dessertService.js';
+import { ProveedorCanasta } from './context/CartContext.jsx';
+import Encabezado from './components/Header.jsx';
+import Portada from './components/Hero.jsx';
+import SeccionPostre from './components/DessertSection.jsx';
+import PiePagina from './components/Footer.jsx';
+import PanelCanasta from './components/CartDrawer.jsx';
+import PanelAdministracion from './components/AdminPanel.jsx';
 
-function useHashRoute() {
-  const [hash, setHash] = useState(window.location.hash);
+function useRutaHash() {
+  const [fragmentoRuta, fijarFragmentoRuta] = useState(window.location.hash);
   useEffect(() => {
-    const onHashChange = () => setHash(window.location.hash);
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
+    const alCambiarRutaHash = () => fijarFragmentoRuta(window.location.hash);
+    window.addEventListener('hashchange', alCambiarRutaHash);
+    return () => window.removeEventListener('hashchange', alCambiarRutaHash);
   }, []);
-  return hash;
+  return fragmentoRuta;
 }
 
-export default function App() {
-  const [desserts, setDesserts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [activeDessertIndex, setActiveDessertIndex] = useState(0);
-  const hash = useHashRoute();
+export default function Aplicacion() {
+  const [postres, fijarPostres] = useState([]);
+  const [cargando, fijarCargando] = useState(true);
+  const [error, fijarError] = useState('');
+  const [indicePostreActivo, fijarIndicePostreActivo] = useState(0);
+  const fragmentoRuta = useRutaHash();
 
   useEffect(() => {
-    dessertService
-      .getDesserts()
+    servicioPostres
+      .obtenerPostres()
       .then((data) => {
-        setDesserts(data);
-        setLoading(false);
+        fijarPostres(data);
+        fijarCargando(false);
       })
       .catch((err) => {
-        setError(err.message);
-        setLoading(false);
+        fijarError(err.message);
+        fijarCargando(false);
       });
   }, []);
 
-  if (loading) {
+  if (cargando) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-canvas font-text text-ink/50">
         Cargando...
@@ -54,25 +54,33 @@ export default function App() {
     );
   }
 
-  if (hash === '#admin') {
-    return <AdminPanel desserts={desserts} onChange={setDesserts} />;
+  if (fragmentoRuta === '#admin') {
+    return <PanelAdministracion postres={postres} onChange={fijarPostres} />;
   }
 
   return (
-    <CartProvider>
+    <ProveedorCanasta>
       <div className="relative min-h-screen flex flex-col bg-paper">
-        <Header desserts={desserts} activeDessertIndex={activeDessertIndex} />
-        <Hero desserts={desserts} activeIndex={activeDessertIndex} onActiveIndexChange={setActiveDessertIndex} />
+        <Encabezado postres={postres} indicePostreActivo={indicePostreActivo} />
+        <Portada postres={postres} indiceActivo={indicePostreActivo} alCambiarIndiceActivo={fijarIndicePostreActivo} />
 
         <main>
-          {desserts.map((dessert, index) => (
-            <DessertSection key={dessert.id} dessert={dessert} index={index} />
+          <section className="bg-white px-5 py-12 sm:py-16 text-center">
+            <h2 className="font-display font-semibold text-[25px] sm:text-[32px] text-ink tracking-tight">
+              Conoce un poco más de lo que están hechos nuestros postres
+            </h2>
+            <p className="font-text text-[15px] sm:text-[17px] text-ink/60 mt-3">
+              Dale clic a las imágenes para ver los ingredientes.
+            </p>
+          </section>
+          {postres.map((postre, indice) => (
+            <SeccionPostre key={postre.id} postre={postre} indice={indice} />
           ))}
         </main>
 
-        <Footer />
-        <CartDrawer />
+        <PiePagina />
+        <PanelCanasta />
       </div>
-    </CartProvider>
+    </ProveedorCanasta>
   );
 }

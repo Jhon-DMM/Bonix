@@ -1,6 +1,6 @@
-import { buildGeneralWhatsAppLink } from '../utils/whatsapp.js';
+import { crearEnlaceGeneralWhatsApp } from '../utils/whatsapp.js';
 
-export default function Footer() {
+export default function PiePagina() {
   const year = new Date().getFullYear();
 
   return (
@@ -13,7 +13,7 @@ export default function Footer() {
           </div>
 
           <a
-            href={buildGeneralWhatsAppLink()}
+            href={crearEnlaceGeneralWhatsApp()}
             target="_blank"
             rel="noreferrer"
             className="font-text text-[14px] font-semibold text-celeste-600 hover:text-celeste-700"

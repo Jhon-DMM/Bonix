@@ -1,0 +1,22 @@
+{
+  "name": "bonix-backend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "test": "node --test",
+    "check": "node --check server.js && node --check src/routes/dessertRoutes.js && node --check src/controllers/dessertController.js && node --check src/validators/dessertValidators.js && node --check src/imageStorage.js && npm test",
+    "seed": "node src/seed.js",
+    "migrate-images": "node src/migrateDessertImages.js",
+    "set-images": "node src/setDessertImages.js",
+    "set-admin": "node src/setAdminCredentials.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.5.1"
+  }
+}

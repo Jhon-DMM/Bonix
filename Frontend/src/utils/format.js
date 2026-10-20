@@ -1,4 +1,4 @@
-export function formatCOP(value) {
+export function formatearCOP(value) {
   return new Intl.NumberFormat('es-CO', {
     style: 'currency',
     currency: 'COP',

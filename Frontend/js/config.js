@@ -38,8 +38,8 @@ window.Bonix.config = {
   };
 
   const toggleNav = () => {
-    const isOpen = mainNav.classList.toggle('is-open');
-    navToggle.setAttribute('aria-expanded', String(isOpen));
+    const estaAbierto = mainNav.classList.toggle('is-open');
+    navToggle.setAttribute('aria-expanded', String(estaAbierto));
   };
 
   navToggle.addEventListener('click', toggleNav);
@@ -93,18 +93,18 @@ window.Bonix.config = {
   const getChosenDesserts = () =>
     DESSERTS
       .map(({ inputId, name }) => {
-        const quantity = parseInt(document.getElementById(inputId).value, 10) || 0;
-        return quantity > 0 ? `${quantity} x ${name}` : null;
+        const cantidad = parseInt(document.getElementById(inputId).value, 10) || 0;
+        return cantidad > 0 ? `${cantidad} x ${name}` : null;
       })
       .filter(Boolean);
 
-  const buildWhatsappMessage = ({ address, phone, notes, items }) => {
+  const buildWhatsappMessage = ({ address, phone, notes, items: elementos }) => {
     const lines = [
       'Hola Bonix, quiero hacer un pedido a domicilio.',
       '',
       `Dirección: ${address}`,
       `Mi WhatsApp: ${phone}`,
-      `Postres: ${items.join(', ')}`,
+      `Postres: ${elementos.join(', ')}`,
     ];
     if (notes) lines.push(`Notas: ${notes}`);
     return lines.join('\n');
@@ -117,18 +117,18 @@ window.Bonix.config = {
     const address = addressField.value.trim();
     const phone = phoneField.value.trim();
     const notes = notesField.value.trim();
-    const items = getChosenDesserts();
+    const elementos = getChosenDesserts();
 
     if (!address || !phone) {
       showError('Por favor completa la dirección y tu número de WhatsApp.');
       return;
     }
-    if (items.length === 0) {
+    if (elementos.length === 0) {
       showError('Elige al menos un postre y su cantidad.');
       return;
     }
 
-    const message = buildWhatsappMessage({ address, phone, notes, items });
+    const message = buildWhatsappMessage({ address, phone, notes, items: elementos });
     const url = new URL(`https://wa.me/${whatsappNumber}`);
     url.searchParams.set('text', message);
 
