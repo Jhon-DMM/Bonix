@@ -24,6 +24,7 @@ const dessertSchema = new mongoose.Schema(
     // carrito, etc). Distinto del _id interno de Mongo.
     id: { type: String, required: true, unique: true, trim: true },
     name: { type: String, required: true, trim: true },
+    catalogOrder: { type: Number, default: 100 },
     price: { type: Number, required: true, min: 0 },
     description: { type: String, default: '' },
     image: { type: String, default: '' },
@@ -33,8 +34,8 @@ const dessertSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// El orden de aparición en el hero y en las secciones sigue el orden de
-// creación (createdAt), así que no hace falta mantener un contador aparte.
-dessertSchema.index({ createdAt: 1 });
+// Los postres iniciales tienen un orden editorial; los agregados desde el
+// panel aparecen después, ordenados por fecha de creación.
+dessertSchema.index({ catalogOrder: 1, createdAt: 1 });
 
 export default mongoose.model('Dessert', dessertSchema);

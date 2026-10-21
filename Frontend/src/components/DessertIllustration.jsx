@@ -3,13 +3,14 @@ import { resolverImagenPostre } from '../services/dessertService.js';
 // Muestra la foto asignada al postre o una ilustración SVG de respaldo.
 export default function IlustracionPostre({ postre, tamano = 260 }) {
   if (postre.image) {
+    const esImagenNuevaCatalogo = /^\/images\/(Mora-imagen|Maracuya-img|Milo-img)\.png$/.test(postre.image);
     return (
       <img
         src={resolverImagenPostre(postre.image)}
         width={tamano}
         height={tamano}
         alt={`Postre ${postre.name}`}
-        className="object-contain"
+        className={esImagenNuevaCatalogo ? 'object-cover' : 'object-contain'}
       />
     );
   }

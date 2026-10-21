@@ -1,50 +1,37 @@
-// Ejecuta `npm run seed` (desde backend/) para llenar la base de datos con
-// los 4 postres originales. Solo agrega los que falten; no borra ni sobrescribe
-// cambios del panel ni postres agregados después.
+// Carga los tres postres base. Conserva los cambios hechos desde el panel,
+// elimina únicamente los postres retirados (Oreo y Fresas) y asigna el orden
+// solicitado para el catálogo.
 import 'dotenv/config';
-import { conectarBaseDatos } from './db.js';
-import Postre from './models/Dessert.js';
 import mongoose from 'mongoose';
+import { conectarBaseDatos } from './db.js';
+import { eliminarImagenPostre } from './imageStorage.js';
+import Postre from './models/Dessert.js';
 
 const postres = [
   {
-    id: 'oreo',
-    name: 'Oreo',
+    id: 'mora',
+    name: 'Mora',
+    catalogOrder: 0,
     price: 7000,
-    description: 'Capas de galleta Oreo, queso crema batido y chocolate.',
-    image: '/images/Postre-oreo.png',
-    colors: { from: '#1b1b1f', to: '#3a3a42', accent: '#f5f5f7', text: '#f5f5f7' },
+    description: 'Cremoso y frutal, con capas suaves de mora y una base crocante de galleta.',
+    image: '/images/Mora-imagen.png',
+    colors: { from: '#351047', to: '#6f2b8c', accent: '#f2ddfb', text: '#fff8ff' },
     ingredients: [
-      { id: 'oreo-1', name: 'Galletas Oreo trituradas' },
-      { id: 'oreo-2', name: 'Queso crema' },
-      { id: 'oreo-3', name: 'Crema de leche' },
-      { id: 'oreo-4', name: 'Leche condensada' },
-      { id: 'oreo-5', name: 'Mantequilla derretida' },
-      { id: 'oreo-6', name: 'Galleta Oreo entera, para decorar' },
-    ],
-  },
-  {
-    id: 'milo',
-    name: 'Milo',
-    price: 7000,
-    description: 'Postre cremoso de chocolate malteado con crocante de Milo.',
-    image: '/images/Postre-Milo.png',
-    colors: { from: '#5a3a1e', to: '#8a5a2c', accent: '#ffe8c2', text: '#fff7ec' },
-    ingredients: [
-      { id: 'milo-1', name: 'Milo en polvo' },
-      { id: 'milo-2', name: 'Crema de leche' },
-      { id: 'milo-3', name: 'Leche condensada' },
-      { id: 'milo-4', name: 'Galletas de chocolate trituradas' },
-      { id: 'milo-5', name: 'Mantequilla derretida' },
-      { id: 'milo-6', name: 'Chips de chocolate' },
+      { id: 'mora-1', name: 'Moras frescas' },
+      { id: 'mora-2', name: 'Crema de leche' },
+      { id: 'mora-3', name: 'Leche condensada' },
+      { id: 'mora-4', name: 'Galletas trituradas' },
+      { id: 'mora-5', name: 'Salsa de mora' },
+      { id: 'mora-6', name: 'Gelatina sin sabor' },
     ],
   },
   {
     id: 'maracuya',
     name: 'Maracuyá',
+    catalogOrder: 10,
     price: 7000,
     description: 'Fresco, dulce y ácido a la vez, con pulpa de maracuyá natural.',
-    image: '/images/Postre-maracuya.png',
+    image: '/images/Maracuya-img.png',
     colors: { from: '#f6a623', to: '#ffd166', accent: '#5a3a00', text: '#3a2500' },
     ingredients: [
       { id: 'mar-1', name: 'Pulpa de maracuyá fresca' },
@@ -56,44 +43,64 @@ const postres = [
     ],
   },
   {
-    id: 'fresas',
-    name: 'Fresas',
+    id: 'milo',
+    name: 'Milo',
+    catalogOrder: 20,
     price: 7000,
-    description: 'Capas de fresa natural con crema suave y base de galleta.',
-    image: '/images/Postre-fresa.png',
-    colors: { from: '#e8486b', to: '#ffb3c6', accent: '#3a0011', text: '#3a0011' },
+    description: 'Postre cremoso de chocolate malteado con crocante de Milo.',
+    image: '/images/Milo-img.png',
+    colors: { from: '#5a3a1e', to: '#8a5a2c', accent: '#ffe8c2', text: '#fff7ec' },
     ingredients: [
-      { id: 'fre-1', name: 'Fresas frescas' },
-      { id: 'fre-2', name: 'Crema de leche' },
-      { id: 'fre-3', name: 'Leche condensada' },
-      { id: 'fre-4', name: 'Galletas tipo María trituradas' },
-      { id: 'fre-5', name: 'Mantequilla derretida' },
-      { id: 'fre-6', name: 'Gelatina de fresa' },
+      { id: 'milo-1', name: 'Milo en polvo' },
+      { id: 'milo-2', name: 'Crema de leche' },
+      { id: 'milo-3', name: 'Leche condensada' },
+      { id: 'milo-4', name: 'Galletas de chocolate trituradas' },
+      { id: 'milo-5', name: 'Mantequilla derretida' },
+      { id: 'milo-6', name: 'Chips de chocolate' },
     ],
   },
 ];
 
+const idsRetirados = ['oreo', 'fresas'];
+const imagenesPredeterminadasAntiguas = new Set([
+  '/images/Mora-imagen.jpeg',
+  '/images/Maracuya-img.jpeg',
+  '/images/Milo-img.jpeg',
+  '/images/Postre-oreo.png',
+  '/images/Postre-Milo.png',
+  '/images/Postre-maracuya.png',
+  '/images/Postre-fresa.png',
+]);
+
 async function run() {
   try {
     await conectarBaseDatos();
-    const result = await Postre.bulkWrite(
-      postres.map((postre) => ({
-        updateOne: {
-          filter: { id: postre.id },
-          update: { $setOnInsert: postre },
-          upsert: true,
-        },
-      })),
-      { ordered: true }
-    );
 
-    console.log(`Carga inicial completada: ${result.upsertedCount} postres agregados; los existentes se conservaron.`);
+    const postresRetirados = await Postre.find({ id: { $in: idsRetirados } }).select('image').lean();
+    await Postre.deleteMany({ id: { $in: idsRetirados } });
+    await Promise.all(postresRetirados.map((postre) => eliminarImagenPostre(postre.image)));
+
+    let postresAgregados = 0;
+    for (const postre of postres) {
+      const actual = await Postre.findOne({ id: postre.id });
+      if (!actual) {
+        await Postre.create(postre);
+        postresAgregados += 1;
+        continue;
+      }
+
+      actual.catalogOrder = postre.catalogOrder;
+      if (!actual.image || imagenesPredeterminadasAntiguas.has(actual.image)) actual.image = postre.image;
+      await actual.save();
+    }
+
+    console.log(`Catálogo actualizado: ${postresAgregados} postres agregados; Mora, Maracuyá y Milo disponibles en ese orden.`);
   } finally {
     if (mongoose.connection.readyState !== 0) await mongoose.disconnect();
   }
 }
 
 run().catch(() => {
-  console.error('No se pudo completar la carga inicial. Revisa la conexión y la configuración de MongoDB.');
+  console.error('No se pudo actualizar el catálogo. Revisa la conexión y la configuración de MongoDB.');
   process.exit(1);
 });

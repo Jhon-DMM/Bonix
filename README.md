@@ -1,21 +1,42 @@
 # Bonix
 
-Sitio de catálogo y pedidos de Bonix. El proyecto tiene un frontend React/Vite
-y una API Express conectada a MongoDB.
+Bonix es una página web para presentar el catálogo de postres artesanales de
+Mora, Maracuyá y Milo, y facilitar los pedidos. La página principal muestra
+los postres en un carrusel visual y en secciones individuales: cada persona
+puede explorar las imágenes,
+consultar la descripción, los ingredientes y el precio, y agregar productos a
+una canasta para preparar su pedido por WhatsApp.
+
+El sitio también incluye un panel privado para que el administrador gestione el
+catálogo: puede modificar precios e ingredientes, cambiar o subir imágenes,
+agregar postres y eliminar los que ya no se ofrecen. Los cambios se guardan en
+la base de datos.
+
+## Cómo está construido
+
+- **Frontend:** React y Vite. Presenta el catálogo, las animaciones, la canasta
+  y la interfaz de administración.
+- **Backend:** Node.js y Express. Expone la API del catálogo, valida los
+  cambios y protege las acciones administrativas con inicio de sesión.
+- **Base de datos:** MongoDB almacena los postres, sus precios, descripciones e
+  ingredientes.
+- **Imágenes:** las fotos del catálogo viven en `Frontend/public/images`;
+  las imágenes subidas desde el panel se guardan como archivos WebP y MongoDB
+  conserva sus rutas.
 
 ## Requisitos
 
 - Node.js y npm.
-- MongoDB disponible; Atlas funciona para desarrollo y producción.
-- MongoDB en replica set para aplicar los cambios masivos de precios de forma
-  atómica. MongoDB Atlas ya usa replica sets; una instalación local standalone
-  debe configurarse como replica set para habilitar esa función.
+- Una instancia de MongoDB. MongoDB Atlas funciona para desarrollo y
+  producción.
+- MongoDB en modo replica set para que los cambios masivos de precios se
+  apliquen como una sola operación. Atlas ya usa replica sets.
 
-## Inicio local
+## Ejecutar en desarrollo
 
-Abre dos terminales desde la carpeta del proyecto.
+Inicia MongoDB y abre dos terminales desde la carpeta del proyecto.
 
-En la primera, prepara y ejecuta la API:
+En la primera terminal, configura y ejecuta el backend:
 
 ```bash
 cd backend
@@ -25,7 +46,13 @@ npm run seed
 npm run dev
 ```
 
-En la segunda, levanta el sitio:
+`npm run set-admin` configura las credenciales del único administrador.
+`npm run seed` sincroniza los postres iniciales, los ordena como Mora,
+Maracuyá y Milo, y conserva los cambios del panel en esos postres. También
+retira del catálogo los registros anteriores de Oreo y Fresas. Si necesitas
+conservar esos registros, respáldalos antes de ejecutar la sincronización.
+
+En la segunda terminal, inicia el frontend:
 
 ```bash
 cd Frontend
@@ -33,23 +60,24 @@ npm install
 npm run dev
 ```
 
-Vite muestra la dirección local, normalmente `http://localhost:5173`. El panel
-de administración está en `/#admin`.
+Abre la dirección local que indique Vite, normalmente
+`http://localhost:5173`. El panel administrativo está disponible en `/#admin`
+y requiere iniciar sesión.
 
-## Comprobaciones
+## Verificaciones
 
-Ejecuta `npm run check` desde `backend/` para revisar sintaxis y correr las
-pruebas de validación de la API. En `Frontend/`, `npm run lint` ejecuta ESLint;
-`npm run check` ejecuta lint, las pruebas de canasta y armado del pedido, y el
-build de producción.
+Desde `backend/`, ejecuta `npm run check` para revisar el backend y sus pruebas.
+Desde `Frontend/`, ejecuta `npm run check` para ejecutar ESLint, las pruebas del
+frontend y la compilación de producción.
 
-## Datos e imágenes
+## Imágenes existentes y despliegue
 
-`npm run seed` solo agrega los postres iniciales que falten; no reemplaza
-cambios existentes. Si ya hay fotos base64 en MongoDB, haz primero un respaldo
-y luego ejecuta `npm run migrate-images` desde `backend/`. Las nuevas imágenes
-se guardan en `backend/uploads/`, por lo que el hosting debe conservar esa
-carpeta entre despliegues o conectarse a un almacenamiento de archivos externo.
+Si la base de datos todavía tiene imágenes antiguas guardadas como base64,
+haz una copia de seguridad antes de ejecutar `npm run migrate-images` desde
+`backend/`. Las imágenes nuevas se guardan en `backend/uploads/`; en producción,
+el almacenamiento debe conservar esos archivos entre despliegues y estar
+disponible para las instancias del backend.
 
-Consulta [la guía del frontend](Frontend/README.md) y
-[la guía del backend](backend/README.md) para más detalles.
+Consulta la [guía del frontend](Frontend/README.md) y la
+[guía del backend](backend/README.md) para más información sobre sus
+configuraciones y funciones.

@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import * as servicioPostres from '../services/dessertService.js';
 import * as servicioAutenticacion from '../services/authService.js';
 import { formatearCOP } from '../utils/format.js';
+import AdornosPostre from './DessertAccents.jsx';
 
 const opcionesImagen = [
-  { label: 'Postre de Oreo', path: '/images/Postre-oreo.png' },
-  { label: 'Postre de Milo', path: '/images/Postre-Milo.png' },
-  { label: 'Postre de maracuyá', path: '/images/Postre-maracuya.png' },
-  { label: 'Postre de fresa', path: '/images/Postre-fresa.png' },
+  { label: 'Postre de Mora', path: '/images/Mora-imagen.png' },
+  { label: 'Postre de maracuyá', path: '/images/Maracuya-img.png' },
+  { label: 'Postre de Milo', path: '/images/Milo-img.png' },
 ];
 const secciones = [
   { id: 'inicio', label: 'Inicio', description: 'Consulta los postres disponibles, sus fotos y sus ingredientes.', icon: <><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" /></> },
@@ -20,6 +20,11 @@ const secciones = [
 
 const postreInicial = { id: '', name: '', price: '', description: '' };
 const obtenerImagenPostre = (postre) => postre.image || '';
+const claseAjusteImagenPostre = (ruta) => (
+  /^\/images\/(Mora-imagen|Maracuya-img|Milo-img)\.png$/.test(ruta || '')
+    ? 'object-cover'
+    : 'object-contain'
+);
 
 async function convertirArchivoImagenWebp(archivo) {
   if (!archivo.type.startsWith('image/')) throw new Error('Elige un archivo de imagen.');
@@ -47,9 +52,9 @@ function TarjetaPostre({ postre }) {
   return (
     <article className="overflow-hidden rounded-card border border-hairline bg-paper">
       <div className="flex justify-center pt-4">
-        <div className="flex h-28 w-28 items-center justify-center rounded-2xl bg-celeste-50 p-3">
+        <div className="flex h-[219px] w-[219px] items-center justify-center rounded-2xl bg-celeste-50 p-3">
           {obtenerImagenPostre(postre)
-            ? <img src={servicioPostres.resolverImagenPostre(obtenerImagenPostre(postre))} alt={postre.name} className="h-20 w-20 max-h-full max-w-full object-contain" />
+            ? <img src={servicioPostres.resolverImagenPostre(obtenerImagenPostre(postre))} alt={postre.name} className={`h-[156px] w-[156px] max-h-full max-w-full ${claseAjusteImagenPostre(postre.image)}`} />
             : <span className="text-center text-xs font-medium text-ink/45">Sin imagen</span>}
         </div>
       </div>
@@ -276,7 +281,8 @@ export default function PanelAdministracion({ postres, onChange }) {
   }
 
   return (
-    <div className="min-h-screen bg-canvas font-text text-ink">
+    <div className="relative isolate min-h-screen bg-canvas font-text text-ink">
+      {postres[0] && <AdornosPostre postre={postres[0]} modo="admin" />}
       <aside className="barra-lateral-admin fixed inset-y-0 left-0 z-30 flex w-[76px] flex-col items-center border-r border-hairline bg-white py-5">
         <a href="#inicio" className="mb-8 flex h-11 w-11 items-center justify-center rounded-2xl bg-celeste-600 font-display text-lg font-bold text-white" aria-label="Volver al sitio">B</a>
         <nav className="flex w-full flex-col items-center gap-2" aria-label="Secciones del panel">
@@ -302,7 +308,7 @@ export default function PanelAdministracion({ postres, onChange }) {
         </a>
       </aside>
 
-      <main className="admin-main ml-[76px] min-h-screen px-[10%] py-8 sm:py-10">
+      <main className="admin-main relative z-10 ml-[76px] min-h-screen px-[10%] py-8 sm:py-10">
         <div className="mx-auto max-w-[1050px]">
           <div className="mb-8 flex items-end justify-between gap-4 px-1 sm:px-2">
             <div className="min-w-0">
@@ -399,8 +405,8 @@ export default function PanelAdministracion({ postres, onChange }) {
                     <h2 className="mb-4 font-display text-lg font-semibold">{postre.name}</h2>
                     <div className="flex flex-col gap-4 sm:flex-row">
                       {imagenSeleccionada
-                        ? <img src={servicioPostres.resolverImagenPostre(imagenSeleccionada)} alt={`Vista previa de ${postre.name}`} className="h-24 w-24 shrink-0 rounded-xl bg-celeste-50 object-contain p-2" />
-                        : <div role="img" aria-label={`${postre.name}: sin imagen asignada`} className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl bg-celeste-50 p-2 text-center text-xs text-ink/45">Sin imagen</div>}
+                        ? <img src={servicioPostres.resolverImagenPostre(imagenSeleccionada)} alt={`Vista previa de ${postre.name}`} className={`h-[188px] w-[188px] shrink-0 rounded-xl bg-celeste-50 p-2 ${claseAjusteImagenPostre(imagenSeleccionada)}`} />
+                        : <div role="img" aria-label={`${postre.name}: sin imagen asignada`} className="flex h-[188px] w-[188px] shrink-0 items-center justify-center rounded-xl bg-celeste-50 p-2 text-center text-xs text-ink/45">Sin imagen</div>}
                       <div className="flex min-w-0 flex-1 flex-col gap-3">
                         <select className={inputClass} value={opcionesImagen.some((opcion) => opcion.path === imagenSeleccionada) ? imagenSeleccionada : ''} onChange={(event) => {
                           const vistaPreviaAnterior = seleccionesImagen[postre.id];
@@ -427,8 +433,8 @@ export default function PanelAdministracion({ postres, onChange }) {
               {postres.map((postre) => (
                 <article key={postre.id} className="flex w-full max-w-[640px] items-center gap-4 rounded-card border border-hairline bg-white p-4">
                   {obtenerImagenPostre(postre)
-                    ? <img src={servicioPostres.resolverImagenPostre(obtenerImagenPostre(postre))} alt="" className="h-11 w-11 shrink-0 rounded-xl bg-celeste-50 object-contain p-1" />
-                    : <span role="img" aria-label="Sin imagen asignada" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-celeste-50 text-center text-[8px] text-ink/45">Sin imagen</span>}
+                    ? <img src={servicioPostres.resolverImagenPostre(obtenerImagenPostre(postre))} alt="" className={`h-[86px] w-[86px] shrink-0 rounded-xl bg-celeste-50 p-1 ${claseAjusteImagenPostre(postre.image)}`} />
+                    : <span role="img" aria-label="Sin imagen asignada" className="flex h-[86px] w-[86px] shrink-0 items-center justify-center rounded-xl bg-celeste-50 text-center text-[8px] text-ink/45">Sin imagen</span>}
                   <div className="min-w-0 flex-1"><h2 className="truncate font-semibold">{postre.name}</h2><p className="text-sm text-ink/50">{formatearCOP(postre.price)}</p></div>
                   <button type="button" onClick={() => eliminarPostre(postre)} className="rounded-pill border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">Eliminar</button>
                 </article>
@@ -467,7 +473,7 @@ export default function PanelAdministracion({ postres, onChange }) {
           <div className="w-full max-w-[400px] rounded-card bg-white p-6 shadow-xl" role="dialog" aria-modal="true" aria-labelledby="confirm-image-title">
             <h2 id="confirm-image-title" className="font-display text-xl font-semibold">¿Guardar esta imagen?</h2>
             <p className="mt-2 text-sm text-ink/65">Se actualizará la imagen de {cambioImagenPendiente.dessertName} en la página principal.</p>
-            <img src={servicioPostres.resolverImagenPostre(cambioImagenPendiente.image)} alt={`Nueva imagen de ${cambioImagenPendiente.dessertName}`} className="mx-auto my-5 h-28 w-28 object-contain" />
+            <img src={servicioPostres.resolverImagenPostre(cambioImagenPendiente.image)} alt={`Nueva imagen de ${cambioImagenPendiente.dessertName}`} className={`mx-auto my-5 h-[219px] w-[219px] ${claseAjusteImagenPostre(cambioImagenPendiente.image)}`} />
             <div className="flex justify-end gap-3">
               <button type="button" onClick={() => fijarCambioImagenPendiente(null)} className="rounded-pill bg-canvas px-5 py-2.5 text-sm font-semibold">Cancelar</button>
               <button type="button" onClick={guardarImagen} className={buttonClass}>Sí, guardar</button>

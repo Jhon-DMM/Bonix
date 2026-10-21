@@ -40,23 +40,23 @@ export default function Encabezado({ postres }) {
   };
 
   return (
-    <header className={`encabezado-entrada fixed inset-x-0 top-0 z-40 border-b border-white/30 bg-white/35 shadow-sm backdrop-blur-xl transition-colors duration-700 ${estaEnPortada ? 'text-white' : 'text-celeste-700'}`}>
-      <div className="mx-auto max-w-[1100px] px-5 h-16 flex items-center justify-between gap-4">
+    <header className="encabezado-entrada fixed inset-x-0 top-0 z-40">
+      <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between gap-4 px-6 sm:px-10">
         <a
           href="#inicio"
           onClick={desplazarA('inicio')}
-          className="font-display font-semibold text-xl tracking-tight shrink-0"
+          className={`shrink-0 font-display text-[23px] font-semibold tracking-tight transition-colors duration-500 ${estaEnPortada ? 'text-white' : 'text-[#83d5ff]'}`}
         >
           Bonix
         </a>
 
-        <nav className="hidden md:flex items-center gap-7 text-[14px] font-text">
+        <nav className="mx-auto hidden items-center gap-1 rounded-pill border border-white/30 bg-white/15 px-1.5 py-1 shadow-[0_5px_20px_rgba(30,70,100,0.1)] backdrop-blur-xl md:flex">
           {postres.map((d) => (
             <a
               key={d.id}
               href={`#postre-${d.id}`}
               onClick={desplazarA(`postre-${d.id}`)}
-              className="opacity-80 hover:opacity-100 transition-opacity"
+              className={`rounded-pill px-4 py-1.5 font-text text-[14px] transition-colors duration-500 hover:bg-white/25 sm:px-5 ${estaEnPortada ? 'text-white' : 'text-celeste-700'}`}
             >
               {d.name}
             </a>
@@ -67,11 +67,12 @@ export default function Encabezado({ postres }) {
           type="button"
           onClick={alternarCanasta}
           aria-label="Abrir canasta"
-          className="relative flex items-center justify-center w-10 h-10 rounded-pill bg-white/20 hover:bg-white/35 transition-colors"
+          className={`relative flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg border border-white/30 bg-white/15 px-3 font-text text-[13px] font-semibold shadow-[0_5px_20px_rgba(30,70,100,0.1)] backdrop-blur-xl transition-colors hover:bg-white/30 ${estaEnPortada ? 'text-white' : 'text-celeste-700'}`}
         >
           <IconoCanasta />
+          <span className="hidden sm:inline">Canasta</span>
           {cantidadTotal > 0 && (
-            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#0071e3] text-white text-[11px] leading-[18px] text-center font-semibold">
+            <span className="absolute -right-2 -top-2 min-w-[19px] rounded-full bg-[#22a9f2] px-1.5 py-0.5 text-center font-text text-[10px] font-bold leading-none text-[#10233a] shadow-sm">
               {cantidadTotal}
             </span>
           )}

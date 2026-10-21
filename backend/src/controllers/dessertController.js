@@ -10,7 +10,7 @@ import {
 } from '../validators/dessertValidators.js';
 
 export async function obtenerTodos(req, res) {
-  const postres = await Postre.find().sort({ createdAt: 1 });
+  const postres = await Postre.find().sort({ catalogOrder: 1, createdAt: 1 });
   res.json(postres);
 }
 

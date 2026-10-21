@@ -52,16 +52,16 @@ async function withDatabaseStubs({ desserts: postres, updateMany }) {
 
 test('aplica el cambio masivo dentro de una sola transacción', async () => {
   const stubs = await withDatabaseStubs({
-    desserts: [{ id: 'oreo' }, { id: 'milo' }],
+    desserts: [{ id: 'mora' }, { id: 'milo' }],
     updateMany: async () => ({ modifiedCount: 2 }),
   });
   const response = createResponse();
 
   try {
-    await actualizarPrecios({ body: { dessertIds: ['oreo', 'milo'], price: 9500 } }, response);
+    await actualizarPrecios({ body: { dessertIds: ['mora', 'milo'], price: 9500 } }, response);
     assert.equal(stubs.operations.transactionCalls, 1);
     assert.equal(stubs.operations.updateCalls, 1);
-    assert.deepEqual(stubs.operations.updateArguments[0], { id: { $in: ['oreo', 'milo'] } });
+    assert.deepEqual(stubs.operations.updateArguments[0], { id: { $in: ['mora', 'milo'] } });
     assert.deepEqual(stubs.operations.updateArguments[1], { $set: { price: 9500 } });
     assert.equal(stubs.operations.updateArguments[2].session, stubs.operations.session);
     assert.deepEqual(response.body, { updatedCount: 2, price: 9500 });
@@ -72,11 +72,11 @@ test('aplica el cambio masivo dentro de una sola transacción', async () => {
 });
 
 test('rechaza el cambio antes de abrir transacción si falta un postre seleccionado', async () => {
-  const stubs = await withDatabaseStubs({ desserts: [{ id: 'oreo' }] });
+  const stubs = await withDatabaseStubs({ desserts: [{ id: 'mora' }] });
   const response = createResponse();
 
   try {
-    await actualizarPrecios({ body: { dessertIds: ['oreo', 'milo'], price: 9500 } }, response);
+    await actualizarPrecios({ body: { dessertIds: ['mora', 'milo'], price: 9500 } }, response);
     assert.equal(stubs.operations.transactionCalls, 1);
     assert.equal(stubs.operations.updateCalls, 0);
     assert.equal(response.statusCode, 404);

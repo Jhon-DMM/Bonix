@@ -1,5 +1,5 @@
 import IlustracionPostre from './DessertIllustration.jsx';
-import { formatearCOP } from '../utils/format.js';
+import AdornosPostre from './DessertAccents.jsx';
 import { useState } from 'react';
 
 function obtenerColorTextoContraste(colorHexadecimal) {
@@ -30,9 +30,16 @@ export default function SeccionPostre({ postre, indice = 0 }) {
   const demoraCierreProducto = 1500;
 
   return (
-    <section id={`postre-${postre.id}`} className="seccion-postre-exterior bg-white py-[15vh]">
+    <section id={`postre-${postre.id}`} className="seccion-postre-exterior relative isolate overflow-hidden bg-white py-[15vh]">
+      <AdornosPostre postre={postre} modo="pagina" />
+      <span className={`versiculo-fondo versiculo-fondo--body versiculo-fondo--body-${indice % 3}`} aria-hidden="true">
+        “Y haré de ti una nación grande,<br />
+        y te bendeciré, y engrandeceré<br />
+        tu nombre, y serás bendición”
+        <small>Génesis 12:2</small>
+      </span>
       <div
-        className={`seccion-postre relative mx-[7%] rounded-[38px] sm:mx-[10%] lg:mx-[15%] ${estaAbierto ? 'esta-abierto' : ''} ${seHaAbierto ? 'se-ha-abierto' : ''} ${imagenVaALaIzquierda ? 'imagen-va-a-la-izquierda' : 'imagen-va-a-la-derecha'}`}
+        className={`seccion-postre relative z-10 mx-[7%] rounded-[38px] sm:mx-[10%] lg:mx-[15%] ${estaAbierto ? 'esta-abierto' : ''} ${seHaAbierto ? 'se-ha-abierto' : ''} ${imagenVaALaIzquierda ? 'imagen-va-a-la-izquierda' : 'imagen-va-a-la-derecha'}`}
         style={{
           color: postre.colors.text,
           backgroundColor: postre.colors.from,
@@ -40,6 +47,8 @@ export default function SeccionPostre({ postre, indice = 0 }) {
           '--demora-cierre-producto': `${demoraCierreProducto}ms`,
         }}
       >
+        <AdornosPostre postre={postre} modo="seccion" />
+
         <button
           type="button"
           className="seccion-postre__tarjeta absolute left-1/2 top-1/2 z-10 flex items-center justify-center rounded-[38px]"
@@ -56,15 +65,12 @@ export default function SeccionPostre({ postre, indice = 0 }) {
 
         <span className="seccion-postre__producto absolute z-20 flex flex-col items-center" aria-hidden="true">
           <span className="seccion-postre__flotante block">
-            <IlustracionPostre postre={postre} tamano={220} />
-          </span>
-          <span className="seccion-postre__precio mt-2 font-text text-[14px] font-semibold">
-            {formatearCOP(postre.price)}
+            <IlustracionPostre postre={postre} tamano={386} />
           </span>
         </span>
 
         <div className="seccion-postre__detalles absolute inset-0">
-          <h2 className={`seccion-postre__titulo font-display text-[14px] font-normal sm:text-[16px] ${imagenVaALaIzquierda && estaAbierto ? 'titulo-postre-hacia-la-derecha' : ''} ${imagenVaALaIzquierda && seHaAbierto && !estaAbierto ? 'titulo-postre-hacia-la-izquierda' : ''}`} style={{ color: colorTextoTitulo }} aria-label={`Postre de: ${postre.name}`}>Postre de: {postre.name}</h2>
+          <h2 className="seccion-postre__titulo font-display text-[14px] font-normal sm:text-[16px]" style={{ color: colorTextoTitulo }} aria-label={`Postre de: ${postre.name}`}>Postre de: {postre.name}</h2>
           <div className="seccion-postre__contenido" aria-hidden={!estaAbierto}>
             <div className="seccion-postre__ingredientes">
               <p className="seccion-postre__descripcion font-text text-[16px] sm:text-[17px]" style={{ '--demora-aparicion-descripcion': `${inicioAparicionDescripcion}ms` }}>{postre.description}</p>

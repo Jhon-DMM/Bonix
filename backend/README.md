@@ -36,6 +36,12 @@ almacenamiento de objetos como S3 o Cloudinary en lugar del almacenamiento local
 Las rutas `GET` del catálogo son públicas. Las rutas que crean, cambian o
 eliminan postres e ingredientes requieren una sesión de administrador.
 
+`npm run seed` sincroniza los postres iniciales en el orden Mora, Maracuyá y
+Milo, conserva los cambios existentes para esos postres y elimina los registros
+retirados de Oreo y Fresas. Los postres agregados desde el panel se conservan.
+Haz un respaldo antes de ejecutarlo si necesitas conservar la información de
+los postres retirados.
+
 Las validaciones de API tienen pruebas automatizadas. Ejecuta `npm test` para
 correrlas o `npm run check` para revisar sintaxis y correr todas las pruebas.
 

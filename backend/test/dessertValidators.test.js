@@ -35,9 +35,9 @@ test('valida actualizaciones parciales y evita parches vacíos', () => {
 });
 
 test('valida listas para cambio masivo de precios', () => {
-  assert.equal(validateBulkPrice({ dessertIds: ['oreo', 'milo'], price: 9000 }), null);
-  assert.match(validateBulkPrice({ dessertIds: ['oreo', 'oreo'], price: 9000 }), /inválidos o repetidos/i);
-  assert.match(validateBulkPrice({ dessertIds: ['oreo'], price: -1 }), /precio/i);
+  assert.equal(validateBulkPrice({ dessertIds: ['mora', 'milo'], price: 9000 }), null);
+  assert.match(validateBulkPrice({ dessertIds: ['mora', 'mora'], price: 9000 }), /inválidos o repetidos/i);
+  assert.match(validateBulkPrice({ dessertIds: ['mora'], price: -1 }), /precio/i);
   assert.match(validateBulkPrice({ dessertIds: [], price: 9000 }), /selecciona/i);
 });
 

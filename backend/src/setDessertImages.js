@@ -4,10 +4,9 @@ import { conectarBaseDatos } from './db.js';
 import Postre from './models/Dessert.js';
 
 const defaultImages = {
-  oreo: '/images/Postre-oreo.png',
-  milo: '/images/Postre-Milo.png',
-  maracuya: '/images/Postre-maracuya.png',
-  fresas: '/images/Postre-fresa.png',
+  mora: '/images/Mora-imagen.png',
+  maracuya: '/images/Maracuya-img.png',
+  milo: '/images/Milo-img.png',
 };
 
 async function run() {

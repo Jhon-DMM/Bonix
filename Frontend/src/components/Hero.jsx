@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react';
 import { useCanasta } from '../context/useCart.js';
 import { formatearCOP } from '../utils/format.js';
 import IlustracionPostre from './DessertIllustration.jsx';
+import AdornosPostre from './DessertAccents.jsx';
 import ModalCantidad from './QuantityModal.jsx';
 
 const duracionEncendido = 1500;
+const duracionTransicionColor = 700;
 const separacionAnimaciones = 900;
 const duracionEntradaEncabezado = 2100;
 const duracionEntradaPostre = 2150;
 const duracionEntradaDetalles = 2000;
-const inicioEntradaEncabezado = duracionEncendido + separacionAnimaciones;
+const inicioCambioColor = duracionEncendido;
+const inicioEntradaEncabezado = inicioCambioColor + duracionTransicionColor + separacionAnimaciones;
 const inicioEntradaPostre = inicioEntradaEncabezado + duracionEntradaEncabezado + separacionAnimaciones;
 const inicioEntradaDetalles = inicioEntradaPostre + duracionEntradaPostre + separacionAnimaciones;
 const finEntradaInicial = inicioEntradaDetalles + duracionEntradaDetalles;
@@ -44,7 +47,7 @@ export default function Portada({ postres, indiceActivo = 0, alCambiarIndiceActi
   useEffect(() => {
     if (movimientoReducido) return undefined;
 
-    const temporizadorFondo = window.setTimeout(() => fijarFondoListo(true), inicioEntradaPostre);
+    const temporizadorFondo = window.setTimeout(() => fijarFondoListo(true), inicioCambioColor);
     const temporizadorEntrada = window.setTimeout(() => fijarEntradaLista(true), finEntradaInicial);
     return () => {
       window.clearTimeout(temporizadorFondo);
@@ -63,19 +66,20 @@ export default function Portada({ postres, indiceActivo = 0, alCambiarIndiceActi
   const indice = Math.min(indiceActivo, postres.length - 1);
   const postre = postres[indice];
   const animacionDeslizamiento = direccion === 'derecha' ? 'animate-deslizar-desde-derecha' : 'animate-deslizar-desde-izquierda';
-  const puedeIrAnterior = indice > 0;
-  const puedeIrSiguiente = indice < postres.length - 1;
+  const puedeNavegarPostres = postres.length > 1;
+  const puedeIrAnterior = puedeNavegarPostres;
+  const puedeIrSiguiente = puedeNavegarPostres;
   const irAnterior = () => {
     if (!puedeIrAnterior) return;
     fijarPrimeraEntradaPostre(false);
     fijarDireccion('izquierda');
-    alCambiarIndiceActivo(indice - 1);
+    alCambiarIndiceActivo((indice - 1 + postres.length) % postres.length);
   };
   const irSiguiente = () => {
     if (!puedeIrSiguiente) return;
     fijarPrimeraEntradaPostre(false);
     fijarDireccion('derecha');
-    alCambiarIndiceActivo(indice + 1);
+    alCambiarIndiceActivo((indice + 1) % postres.length);
   };
   const confirmarAgregar = (cantidad) => {
     agregarElemento(postre, cantidad);
@@ -96,6 +100,8 @@ export default function Portada({ postres, indiceActivo = 0, alCambiarIndiceActi
           style={{ background: `radial-gradient(circle at 50% 38%, ${postre.colors.to}, transparent 65%)` }}
         />
       )}
+      <AdornosPostre postre={postre} modo="hero" />
+      <AdornosPostre postre={postre} modo="hero-frente" />
       <div className="hero-encendido absolute inset-0 z-30 pointer-events-none" aria-hidden="true" />
 
       <div className={entradaLista ? 'pointer-events-auto' : 'entrada-hero-demorada pointer-events-none'} style={{ '--demora-entrada-detalles': `${inicioEntradaDetalles}ms` }}>
@@ -107,9 +113,9 @@ export default function Portada({ postres, indiceActivo = 0, alCambiarIndiceActi
         </p>
       </div>
 
-      <div key={postre.id} className={`absolute inset-0 flex items-center justify-center pointer-events-none ${animacionDeslizamiento} ${primeraEntradaPostre ? 'entrada-imagen-postre' : ''}`} style={{ '--demora-entrada-postre': primeraEntradaPostre ? `${inicioEntradaPostre}ms` : '0ms' }}>
-        <div className="-translate-y-6 sm:-translate-y-2">
-          <IlustracionPostre postre={postre} tamano={Math.min(442, window.innerWidth * 0.68)} />
+      <div key={postre.id} className={`absolute inset-0 z-10 flex items-center justify-center pointer-events-none ${animacionDeslizamiento} ${primeraEntradaPostre ? 'entrada-imagen-postre' : ''}`} style={{ '--demora-entrada-postre': primeraEntradaPostre ? `${inicioEntradaPostre}ms` : '0ms' }}>
+        <div className="hero-postre-flotante -translate-y-6 sm:-translate-y-2">
+          <IlustracionPostre postre={postre} tamano={Math.min(863, window.innerWidth * 1.326)} />
         </div>
       </div>
 

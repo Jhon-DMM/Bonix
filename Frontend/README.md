@@ -1,8 +1,9 @@
 # Bonix — Frontend
 
-Sitio de Bonix en React, con header + canasta de compras, un hero tipo
+Sitio de Bonix en React, con encabezado y canasta de compras, un hero tipo
 carrusel (un postre a la vez) y una sección por postre con imagen e
-ingredientes alternados. Paleta celeste sobre blanco, inspirada en el
+ingredientes alternados. El catálogo inicial contiene Mora, Maracuyá y Milo,
+en ese orden. Paleta celeste sobre blanco, inspirada en el
 sistema de diseño de Apple (fondos blancos, botones tipo píldora,
 tarjetas de 28px, sin sombras).
 
@@ -30,7 +31,7 @@ src/
     Header.jsx            # logo + atajos de sección + icono de canasta
     CartDrawer.jsx         # panel de la canasta y botón "Ordenar por WhatsApp"
     Hero.jsx                # carrusel de postres (uno a la vez)
-    DessertIllustration.jsx # arte placeholder de cada postre
+    DessertIllustration.jsx # foto asignada o ilustración de respaldo
     QuantityModal.jsx       # ventana para elegir cantidad al agregar
     DessertSection.jsx      # sección imagen + ingredientes, alternada
     Footer.jsx               # footer básico

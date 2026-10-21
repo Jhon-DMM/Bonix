@@ -65,11 +65,11 @@ export default function Aplicacion() {
         <Portada postres={postres} indiceActivo={indicePostreActivo} alCambiarIndiceActivo={fijarIndicePostreActivo} />
 
         <main>
-          <section className="bg-white px-5 py-12 sm:py-16 text-center">
-            <h2 className="font-display font-semibold text-[25px] sm:text-[32px] text-ink tracking-tight">
+          <section className="relative isolate overflow-hidden bg-white px-5 py-12 text-center sm:py-16">
+            <h2 className="relative z-10 font-display font-semibold text-[25px] sm:text-[32px] text-ink tracking-tight">
               Conoce un poco más de lo que están hechos nuestros postres
             </h2>
-            <p className="font-text text-[15px] sm:text-[17px] text-ink/60 mt-3">
+            <p className="relative z-10 font-text text-[15px] sm:text-[17px] text-ink/60 mt-3">
               Dale clic a las imágenes para ver los ingredientes.
             </p>
           </section>

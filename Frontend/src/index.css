@@ -70,6 +70,33 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(14 130 209 / 48%) rgb(14 130 209 / 12%);
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  border-left: 1px solid rgb(14 130 209 / 14%);
+  background: rgb(14 130 209 / 12%);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: rgb(14 130 209 / 52%);
+  background-clip: padding-box;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(14 130 209 / 72%);
 }
 
 @keyframes entrada-encabezado-desde-arriba {
@@ -93,7 +120,7 @@ html {
 }
 
 .encabezado-entrada {
-  animation: entrada-encabezado-desde-arriba 2100ms cubic-bezier(0.22, 1, 0.36, 1) 2400ms both;
+  animation: entrada-encabezado-desde-arriba 2100ms cubic-bezier(0.22, 1, 0.36, 1) 3100ms both;
 }
 
 .hero-encendido {
@@ -135,6 +162,102 @@ body {
   min-height: clamp(460px, 62vh, 700px);
 }
 
+.versiculo-fondo {
+  position: absolute;
+  z-index: 0;
+  width: min(440px, 72%);
+  color: #454b52;
+  font-family: var(--font-display);
+  font-size: clamp(8.8px, 0.84vw, 11.2px);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-align: left;
+  opacity: 0.58;
+  filter: blur(0.35px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.versiculo-fondo small {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--font-text);
+  font-size: 7.2px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.versiculo-fondo--body {
+  left: 5%;
+  top: 2vh;
+}
+
+.versiculo-fondo--body-1 {
+  left: auto;
+  right: 0.5%;
+  top: 50%;
+  width: min(340px, 14vw);
+  text-align: left;
+  transform: translateY(-50%);
+}
+
+.versiculo-fondo--body-2 {
+  left: 9%;
+  top: auto;
+  bottom: 2vh;
+}
+
+.decoraciones-postres {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.decoraciones-postres--seccion {
+  border-radius: inherit;
+}
+
+.decoraciones-postres--pagina {
+  z-index: 1;
+}
+
+.decoraciones-postres--hero-frente {
+  z-index: 11;
+}
+
+.decoraciones-postres--admin {
+  position: fixed;
+  z-index: 0;
+}
+
+.decoracion-postre {
+  position: absolute;
+  display: block;
+  aspect-ratio: 1;
+  object-fit: contain;
+  filter: blur(var(--desenfoque-postre)) drop-shadow(0 14px 18px rgb(24 20 36 / 28%));
+  animation: flotar-adorno 7s ease-in-out var(--demora-flotacion-postre) infinite;
+  user-select: none;
+}
+
+@keyframes flotar-adorno {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -9px; }
+}
+
+.hero-postre-flotante,
+.seccion-postre__producto {
+  animation: balanceo-vaso 4.6s ease-in-out infinite;
+}
+
+@keyframes balanceo-vaso {
+  0%, 100% { margin-top: -5px; }
+  50% { margin-top: 5px; }
+}
+
 .seccion-postre__tarjeta {
   width: 280px;
   height: 340px;
@@ -159,12 +282,12 @@ body {
 }
 
 .imagen-va-a-la-izquierda.esta-abierto .seccion-postre__producto {
-  left: 5%;
+  left: 0.5%;
   transform: translateY(-50%);
 }
 
 .imagen-va-a-la-derecha.esta-abierto .seccion-postre__producto {
-  left: 95%;
+  left: 99.5%;
   transform: translate(-100%, -50%);
 }
 
@@ -177,17 +300,8 @@ body {
 .seccion-postre__flotante > img,
 .seccion-postre__flotante > svg {
   display: block;
-  width: min(220px, 48vw);
+  width: min(579px, 93.6vw);
   height: auto;
-}
-
-.seccion-postre__precio {
-  white-space: nowrap;
-  transition: opacity 450ms ease;
-}
-
-.seccion-postre.se-ha-abierto:not(.esta-abierto) .seccion-postre__precio {
-  opacity: 0;
 }
 
 .seccion-postre__detalles {
@@ -227,25 +341,6 @@ body {
 .imagen-va-a-la-izquierda.esta-abierto .seccion-postre__titulo {
   left: 55%;
   width: 40%;
-  text-align: right;
-}
-
-.seccion-postre__titulo.titulo-postre-hacia-la-derecha {
-  animation: titulo-postre-hacia-la-derecha 1500ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.seccion-postre__titulo.titulo-postre-hacia-la-izquierda {
-  animation: titulo-postre-hacia-la-izquierda 1500ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes titulo-postre-hacia-la-derecha {
-  from { left: 5%; width: 90%; }
-  to { left: 55%; width: 40%; }
-}
-
-@keyframes titulo-postre-hacia-la-izquierda {
-  from { left: 55%; width: 40%; }
-  to { left: 5%; width: 90%; }
 }
 
 .seccion-postre__descripcion {
@@ -337,6 +432,30 @@ body {
   .seccion-postre__contenido {
     top: 19%;
     width: 43%;
+  }
+
+  .decoraciones-postres--hero .decoracion-postre {
+    max-width: 30vw;
+  }
+
+  .decoraciones-postres--hero .decoracion-postre--hojas-vaso {
+    max-width: 39vw;
+  }
+
+  .decoraciones-postres--seccion .decoracion-postre {
+    max-width: 23vw;
+  }
+
+  .decoraciones-postres--pagina {
+    display: block;
+  }
+
+  .decoraciones-postres--pagina .decoracion-postre {
+    max-width: 22vw;
+  }
+
+  .decoraciones-postres--pagina .decoracion-postre--bajo-tarjeta {
+    max-width: clamp(110px, 24vw, 280px);
   }
 
 }
