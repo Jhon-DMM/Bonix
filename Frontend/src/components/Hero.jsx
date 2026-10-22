@@ -115,7 +115,7 @@ export default function Portada({ postres, indiceActivo = 0, alCambiarIndiceActi
 
       <div key={postre.id} className={`absolute inset-0 z-10 flex items-center justify-center pointer-events-none ${animacionDeslizamiento} ${primeraEntradaPostre ? 'entrada-imagen-postre' : ''}`} style={{ '--demora-entrada-postre': primeraEntradaPostre ? `${inicioEntradaPostre}ms` : '0ms' }}>
         <div className="hero-postre-flotante -translate-y-6 sm:-translate-y-2">
-          <IlustracionPostre postre={postre} tamano={Math.min(863, window.innerWidth * 1.326)} />
+          <IlustracionPostre postre={postre} tamano={Math.min(1079, window.innerWidth * 1.6575)} />
         </div>
       </div>
 

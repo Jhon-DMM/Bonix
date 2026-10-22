@@ -101,6 +101,9 @@ const distribucionPorModo = {
     { ruta: imagenesHojas[0], izquierda: '4%', arriba: '39%', ancho: 'clamp(58px, 8vw, 122px)', giro: -28, desenfoque: 1.6, opacidad: 0.74 },
     { ruta: imagenesHojas[1], derecha: '4%', arriba: '47%', ancho: 'clamp(64px, 9vw, 136px)', giro: 24, desenfoque: 0.4, opacidad: 0.84 },
     { ruta: imagenesHojas[2], izquierda: '14%', abajo: '9%', ancho: 'clamp(48px, 6vw, 92px)', giro: 20, desenfoque: 3, opacidad: 0.55 },
+    { ruta: imagenesHojas[1], izquierda: '39%', arriba: '28%', ancho: 'clamp(44px, 10vw, 74px)', giro: -32, desenfoque: 0.7, opacidad: 0.9, soloMovil: true },
+    { ruta: imagenesHojas[0], derecha: '39%', arriba: '30%', ancho: 'clamp(42px, 9vw, 68px)', giro: 28, desenfoque: 0.5, opacidad: 0.92, soloMovil: true },
+    { ruta: imagenesHojas[2], izquierda: '49%', arriba: '23%', ancho: 'clamp(38px, 8vw, 60px)', giro: 12, desenfoque: 1.2, opacidad: 0.78, soloMovil: true },
   ],
   seccion: [
     { imagen: 0, izquierda: '-5%', arriba: '13%', ancho: 'clamp(78px, 10vw, 150px)', giro: -18, desenfoque: 1.8, opacidad: 0.75 },
@@ -148,7 +151,7 @@ export default function AdornosPostre({ postre, modo = 'seccion' }) {
       {distribucion.map((adorno, indice) => (
         <img
           key={`${clave}-${modo}-${indice}`}
-          className={`decoracion-postre ${adorno.centrar ? 'decoracion-postre--hojas-vaso' : ''} ${adorno.bajoTarjeta ? 'decoracion-postre--bajo-tarjeta' : ''}`}
+          className={`decoracion-postre ${adorno.centrar ? 'decoracion-postre--hojas-vaso' : ''} ${adorno.bajoTarjeta ? 'decoracion-postre--bajo-tarjeta' : ''} ${adorno.soloMovil ? 'decoracion-postre--solo-movil' : ''}`}
           src={encodeURI(adorno.ruta || imagenes[adorno.imagen])}
           alt=""
           loading={modo === 'hero' ? 'eager' : 'lazy'}

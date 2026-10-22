@@ -284,7 +284,9 @@ export default function PanelAdministracion({ postres, onChange }) {
     <div className="relative isolate min-h-screen bg-canvas font-text text-ink">
       {postres[0] && <AdornosPostre postre={postres[0]} modo="admin" />}
       <aside className="barra-lateral-admin fixed inset-y-0 left-0 z-30 flex w-[76px] flex-col items-center border-r border-hairline bg-white py-5">
-        <a href="#inicio" className="mb-8 flex h-11 w-11 items-center justify-center rounded-2xl bg-celeste-600 font-display text-lg font-bold text-white" aria-label="Volver al sitio">B</a>
+        <a href="#inicio" className="mb-8 flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl bg-[#3a1d0c]" aria-label="Volver al sitio">
+          <img src="/images/logo-bonix.png" alt="" aria-hidden="true" className="mt-[18px] h-[84px] w-[84px] max-w-none shrink-0 object-contain" />
+        </a>
         <nav className="flex w-full flex-col items-center gap-2" aria-label="Secciones del panel">
           {secciones.map((seccion) => (
             <button

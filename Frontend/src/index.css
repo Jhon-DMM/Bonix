@@ -243,6 +243,10 @@ body {
   user-select: none;
 }
 
+.decoracion-postre--solo-movil {
+  display: none;
+}
+
 @keyframes flotar-adorno {
   0%, 100% { translate: 0 0; }
   50% { translate: 0 -9px; }
@@ -429,6 +433,16 @@ body {
     height: 330px;
   }
 
+  .imagen-va-a-la-izquierda.esta-abierto .seccion-postre__producto {
+    left: 18.75%;
+    transform: translate(-50%, -50%);
+  }
+
+  .imagen-va-a-la-derecha.esta-abierto .seccion-postre__producto {
+    left: 81.25%;
+    transform: translate(-50%, -50%);
+  }
+
   .seccion-postre__contenido {
     top: 19%;
     width: 43%;
@@ -439,7 +453,11 @@ body {
   }
 
   .decoraciones-postres--hero .decoracion-postre--hojas-vaso {
-    max-width: 39vw;
+    max-width: 54.6vw;
+  }
+
+  .decoraciones-postres--hero .decoracion-postre--solo-movil {
+    display: block;
   }
 
   .decoraciones-postres--seccion .decoracion-postre {
